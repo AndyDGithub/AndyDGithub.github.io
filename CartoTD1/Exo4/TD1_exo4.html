@@ -4,45 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TD1_Exo4</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Touchg event</h1>
+    <h1>Touch event</h1>
 
     <div class="data">
-        <h2>Orientation</h2>
+        <h2>Touch Event</h2>
         <p>start touch : <span id="start-current"></span></p>
         <p>move : <span id="move-current"></span></p>
-        <p>start end : <span id="end-current"></span></p>
-        
+        <p>end touch : <span id="end-current"></span></p>
     </div>
 
-    <h1><a href="../Exo3/TD1_exo3.html">Lien vers l'exo precedent</a></h1>
+    <canvas id="canvas" width="500" height="500"></canvas>
+
+    <h1><a href="../Exo3/TD1_exo3.html">Lien vers l'exo précédent</a></h1>
 
     <script>
         document.addEventListener("DOMContentLoaded", startup);
 
+        let isDrawing = false;
+        let canvas, ctx;
+
         function startup() {
-            const el = document.getElementById("canvas");
-            el.addEventListener("touchstart", handleStart);
-            el.addEventListener("touchend", handleEnd);
-            el.addEventListener("touchmove", handleMove);
+            canvas = document.getElementById("canvas");
+            ctx = canvas.getContext("2d");
+            
+            canvas.addEventListener("touchstart", handleStart);
+            canvas.addEventListener("touchend", handleEnd);
+            canvas.addEventListener("touchmove", handleMove);
         }
 
-        function handleStart(event){
-            document.getElementById("start-current").textContent = "x : " + event.x + "; y : " + event.y
+        function handleStart(event) {
+            event.preventDefault();
+            isDrawing = true;
+            const touch = event.touches[0]; // On récupère la première touche
+            const x = touch.clientX - canvas.offsetLeft;
+            const y = touch.clientY - canvas.offsetTop;
+
+            document.getElementById("start-current").textContent = "x : " + x + "; y : " + y;
+
+            // Commencer à dessiner un cercle au point de départ
+            ctx.beginPath();
+            ctx.arc(x, y, 5, 0, Math.PI * 2);
+            ctx.fill();
         }
-        function handleMove(event){
-            document.getElementById("move-current").textContent = "x : " + event.x + "; y : " + event.y
+
+        function handleMove(event) {
+            event.preventDefault();
+            if (!isDrawing) return;
+
+            const touch = event.touches[0];
+            const x = touch.clientX - canvas.offsetLeft;
+            const y = touch.clientY - canvas.offsetTop;
+
+            document.getElementById("move-current").textContent = "x : " + x + "; y : " + y;
+
+            // Dessiner un point ou une ligne pendant que l'utilisateur déplace son doigt
+            ctx.lineTo(x, y);
+            ctx.stroke();
         }
-        function handleEnd(event){
-            document.getElementById("end-current").textContent = "x : " + event.x + "; y : " + event.y
+
+        function handleEnd(event) {
+            event.preventDefault();
+            isDrawing = false;
+
+            const touch = event.changedTouches[0]; // Récupérer la touche où le doigt a quitté l'écran
+            const x = touch.clientX - canvas.offsetLeft;
+            const y = touch.clientY - canvas.offsetTop;
+
+            document.getElementById("end-current").textContent = "x : " + x + "; y : " + y;
+
+            // Terminer le tracé
+            ctx.closePath();
         }
-
-
-
-
     </script>
-    
+
 </body>
 </html>
