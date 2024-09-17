@@ -41,6 +41,8 @@
     const ctxP = canvasP.getContext('2d');
     let xPos = canvas.width / 2;
     let yPos = canvas.height / 2;
+    let xPosP = canvasPersonne.width / 2;
+    let yPosP = canvasPersonne.height / 2;
 
     // Track geolocation and update map
     function initMap(lat, lon) {
@@ -84,23 +86,29 @@
         const gamma = event.gamma;
 
         // Alpha - rotate circle
-        ctxP.clearRect(0, 0, canvasPersonne.width, canvasPersonne.height);  // Clear previous drawings
-        ctxP.save();
-        ctxP.translate(xPos, yPos);
-        ctxP.rotate(alpha * Math.PI / 180);  // Convert alpha to radians for rotation
-        ctxP.beginPath();
-        ctxP.arc(0, 0, 20, 0, Math.PI * 2);  // Circle
-        ctxP.stroke();
-        ctxP.restore();
+        // Draw the full circle
+        ctxPersonne.beginPath();
+        ctxPersonne.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, Math.PI * 2);
+        ctxPersonne.stroke();
+
+        // Draw the colored portion representing alpha degrees
+        ctxPersonne.beginPath();
+        ctxPersonne.moveTo(canvasPersonne.width / 2, canvasPersonne.height / 2);
+        ctxPersonne.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, alpha * Math.PI / 180);
+        ctxPersonne.lineTo(canvasPersonne.width / 2, canvasPersonne.height / 2);
+        ctxPersonne.fillStyle = 'blue';
+        ctxPersonne.fill();
 
         // Beta - lean the person (simple representation)
+        // Draw a person standing or tilted based on beta
         const bodyHeight = 100;
-        const droit = 90
-        const lean = beta * Math.PI / 180;  // Convert to radians
-        ctxP.beginPath();
-        ctxP.moveTo(canvasPersonne.width / 2, canvasPersonne.height / 2 - bodyHeight / 2);
-        ctxP.lineTo(canvasPersonne.width / 2 + Math.sin(droit - lean) * 50, canvasPersonne.height / 2 + bodyHeight / 2);
-        ctxP.stroke();
+        const tilt = (beta - 90) * Math.PI / 180;  // Adjust tilt; 90° = upright
+
+        // Draw the body (line)
+        ctxPersonne.beginPath();
+        ctxPersonne.moveTo(canvasPersonne.width / 2, canvasPersonne.height / 2 - bodyHeight / 2);
+        ctxPersonne.lineTo(canvasPersonne.width / 2 + Math.sin(tilt) * 50, canvasPersonne.height / 2 + bodyHeight / 2);
+        ctxPersonne.stroke();
 
         // Gamma - rotate top-down view
         ctxP.save();
