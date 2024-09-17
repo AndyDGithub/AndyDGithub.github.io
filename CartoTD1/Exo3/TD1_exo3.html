@@ -18,8 +18,18 @@
         
     </div>
 
+    <div class="data"></div>
+        <h2>Motion</h2>
+        <p>x : <span id="x-current"></span></p>
+        <p>y : <span id="y-current"></span></p>
+        <p>z : <span id="z-current"></span></p>
+        
+    </div>
+
     <script>
         window.addEventListener("deviceorientation", handleOrientation, true);
+        window.addEventListener("devicemotion", handleMotionEvent, true);
+
 
         function handleOrientation(event) {
             const absolute = event.absolute;
@@ -32,6 +42,17 @@
             document.getElementById("beta-current").textContent = beta;
             document.getElementById("gamma-current").textContent = gamma;
         }
+
+        function handleMotionEvent(event) {
+            var x = event.accelerationIncludingGravity.x;
+            var y = event.accelerationIncludingGravity.y;
+            var z = event.accelerationIncludingGravity.z;
+
+            document.getElementById("x-current").textContent = x;
+            document.getElementById("y-current").textContent = y;
+            document.getElementById("z-current").textContent = z;
+        }
+
 
     </script>
     
