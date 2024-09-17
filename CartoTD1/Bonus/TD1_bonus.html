@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TD1 Bonus</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+            display: block;
+            margin: 20px auto;
+        }
+        #map {
+            width: 100%;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Combined Geolocation, Motion, and Touch Drawing</h1>
+
+<div id="map"></div>
+<canvas id="canvas" width="500" height="500"></canvas>
+
+<div class="data">
+    <h2>Device Motion</h2>
+    <p>Acceleration X: <span id="x-current"></span></p>
+    <p>Acceleration Y: <span id="y-current"></span></p>
+    <p>Acceleration Z: <span id="z-current"></span></p>
+</div>
+
+<script>
+    // Setup canvas
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let xPos = canvas.width / 2;
+    let yPos = canvas.height / 2;
+
+    // Track geolocation and update map
+    function initMap(lat, lon) {
+        const map = L.map('map').setView([lat, lon], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+        L.marker([lat, lon]).addTo(map).bindPopup('You are here!').openPopup();
+    }
+
+    navigator.geolocation.getCurrentPosition((position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        initMap(lat, lon);
+    });
+
+    // Device motion event listener
+    window.addEventListener('devicemotion', function(event) {
+        const accX = event.acceleration.x;
+        const accY = event.acceleration.y;
+
+        document.getElementById('x-current').textContent = accX.toFixed(2);
+        document.getElementById('y-current').textContent = accY.toFixed(2);
+
+        // Move the drawing based on device motion
+        xPos += accX * 5;
+        yPos += accY * 5;
+
+        // Ensure bounds
+        xPos = Math.max(0, Math.min(canvas.width, xPos));
+        yPos = Math.max(0, Math.min(canvas.height, yPos));
+
+        // Draw
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(xPos, yPos, 10, 10);
+    });
+
+    // Touch events
+    canvas.addEventListener('touchstart', function(event) {
+        const touch = event.touches[0];
+        ctx.beginPath();
+        ctx.moveTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
+    });
+
+    canvas.addEventListener('touchmove', function(event) {
+        event.preventDefault();
+        const touch = event.touches[0];
+        ctx.lineTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
+        ctx.stroke();
+    });
+
+</script>
+<!-- Leaflet JS for map -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+</body>
+</html>
