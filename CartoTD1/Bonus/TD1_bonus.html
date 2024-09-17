@@ -91,7 +91,7 @@
         // Alpha - rotate circle
         // Draw the full circle
         ctxP.beginPath();
-        ctxP.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, Math.PI * 2);
+        ctxP.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, Math.PI * 2 -  - 90 * Math.PI / 180);
         ctxP.stroke();
 
         // Draw the colored portion representing alpha degrees
@@ -114,7 +114,7 @@
 
         // Draw the body (line from bottom to the calculated top point)
         ctxP.beginPath();
-        ctxP.moveTo(centerX, bottomY); // Fixed bottom point
+        ctxP.moveTo(100, bottomY); // Fixed bottom point
         ctxP.lineTo(topX, topY); // Moving top point
         ctxP.stroke();
 
