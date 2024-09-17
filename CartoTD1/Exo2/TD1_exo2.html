@@ -54,7 +54,7 @@
                   document.getElementById("lon-current").textContent = position.coords.longitude;
                   document.getElementById("alt-current").textContent = position.coords.altitude ? position.coords.altitude : "Non disponible";
                   document.getElementById("accuracy-current").textContent = position.coords.accuracy;
-                  document.getElementById("speed-current").textContent = position.coords.speed ? position.coords.speed : "Non disponible";
+                  document.getElementById("speed-current").textContent = position.coords.speed;
                   document.getElementById("timestamp-current").textContent = new Date(position.timestamp).toLocaleString();
                }, function(error) {
                   alert("Erreur lors de la récupération de la position : " + error.message);
@@ -66,7 +66,7 @@
                   document.getElementById("lon-watch").textContent = position.coords.longitude;
                   document.getElementById("alt-watch").textContent = position.coords.altitude ? position.coords.altitude : "Non disponible";
                   document.getElementById("accuracy-watch").textContent = position.coords.accuracy;
-                  document.getElementById("speed-watch").textContent = position.coords.speed ? position.coords.speed : "Non disponible";
+                  document.getElementById("speed-watch").textContent = position.coords.speed;
                   document.getElementById("timestamp-watch").textContent = new Date(position.timestamp).toLocaleString();
                }, function(error) {
                   alert("Erreur lors de la récupération de la position : " + error.message);

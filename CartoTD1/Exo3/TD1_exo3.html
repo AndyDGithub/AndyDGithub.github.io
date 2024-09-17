@@ -11,7 +11,6 @@
 
     <div class="data">
         <h2>Orientation</h2>
-        <p>absolute : <span id="absolute-current"></span></p>
         <p>alpha : <span id="alpha-current"></span></p>
         <p>beta : <span id="beta-current"></span></p>
         <p>gamma : <span id="gamma-current"></span></p>
@@ -19,10 +18,10 @@
     </div>
 
     <div class="data"></div>
-        <h2>Motion</h2>
-        <p>x : <span id="x-current"></span></p>
-        <p>y : <span id="y-current"></span></p>
-        <p>z : <span id="z-current"></span></p>
+        <h2>Mouvement</h2>
+        <p>acceleration x : <span id="x-current"></span></p>
+        <p>acceleration y : <span id="y-current"></span></p>
+        <p>acceleration z : <span id="z-current"></span></p>
         
     </div>
 
@@ -37,7 +36,6 @@
             const beta = event.beta;
             const gamma = event.gamma;
 
-            document.getElementById("absolute-current").textContent = absolute;
             document.getElementById("alpha-current").textContent = alpha;
             document.getElementById("beta-current").textContent = beta;
             document.getElementById("gamma-current").textContent = gamma;
