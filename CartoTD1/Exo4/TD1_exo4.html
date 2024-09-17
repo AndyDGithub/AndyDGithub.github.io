@@ -47,7 +47,7 @@
             const x = touch.clientX - canvas.offsetLeft;
             const y = touch.clientY - canvas.offsetTop;
 
-            document.getElementById("start-current").textContent = "x : " + x + "; y : " + y;
+            document.getElementById("start-current").textContent = "x : " + x.toFixed(2) + "; y : " + y.toFixed(2);
 
             // Commencer à dessiner un cercle au point de départ
             ctx.beginPath();
@@ -63,7 +63,7 @@
             const x = touch.clientX - canvas.offsetLeft;
             const y = touch.clientY - canvas.offsetTop;
 
-            document.getElementById("move-current").textContent = "x : " + x + "; y : " + y;
+            document.getElementById("move-current").textContent = "x : " + x.toFixed(2) + "; y : " + y.toFixed(2);
 
             // Dessiner un point ou une ligne pendant que l'utilisateur déplace son doigt
             ctx.lineTo(x, y);
@@ -78,7 +78,7 @@
             const x = touch.clientX - canvas.offsetLeft;
             const y = touch.clientY - canvas.offsetTop;
 
-            document.getElementById("end-current").textContent = "x : " + x + "; y : " + y;
+            document.getElementById("end-current").textContent = "x : " + x.toFixed(2) + "; y : " + y.toFixed(2);
 
             // Terminer le tracé
             ctx.closePath();
