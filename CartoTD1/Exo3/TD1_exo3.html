@@ -46,12 +46,12 @@
         }
 
         function handleMotionEvent(event) {
-            var x = event.accelerationIncludingGravity.x;
-            var y = event.accelerationIncludingGravity.y;
-            var z = event.accelerationIncludingGravity.z;
-            var rotaA = event.accelerationIncludingGravity.alpha
-            var rotaB = event.accelerationIncludingGravity.beta
-            var rotaG = event.accelerationIncludingGravity.gamma
+            var x = event.acceleration.x;
+            var y = event.acceleration.y;
+            var z = event.acceleration.z;
+            var rotaA = event.rotation.alpha
+            var rotaB = event.rotation.beta
+            var rotaG = event.rotation.gamma
 
             document.getElementById("x-current").textContent = x;
             document.getElementById("y-current").textContent = y;
