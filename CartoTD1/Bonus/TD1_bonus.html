@@ -97,20 +97,25 @@
         // Draw the colored portion representing alpha degrees
         ctxP.beginPath();
         ctxP.moveTo(canvasPersonne.width / 2, canvasPersonne.height / 2);
-        ctxP.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, alpha * Math.PI / 180 + 90 * Math.PI / 180);
+        ctxP.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, alpha * Math.PI / 180 - 90 * Math.PI / 180);
         ctxP.lineTo(canvasPersonne.width / 2, canvasPersonne.height / 2);
         ctxP.fillStyle = 'blue';
         ctxP.fill();
 
         // Beta - lean the person (simple representation)
         // Draw a person standing or tilted based on beta
-        const bodyHeight = 100;
-        const tilt = (beta - 90) * Math.PI / 180;  // Adjust tilt; 90° = upright
+        const bodyHeight = 100;  // Height of the "person"
+        const centerX = canvasPersonne.width / 2;
+        const bottomY = canvasPersonne.height / 2 + bodyHeight / 2;
 
-        // Draw the body (line)
+        // Calculate the new top point position based on beta
+        const topX = centerX + Math.sin(beta * Math.PI / 180) * (bodyHeight / 2); // Arc movement
+        const topY = bottomY - Math.cos(beta * Math.PI / 180) * bodyHeight; // Vertical movement
+
+        // Draw the body (line from bottom to the calculated top point)
         ctxP.beginPath();
-        ctxP.moveTo(100, canvasPersonne.height / 2 - bodyHeight / 2);
-        ctxP.lineTo( canvasPersonne.width / 2 + Math.sin(tilt) * 180, canvasPersonne.height / 2 + bodyHeight / 2);
+        ctxP.moveTo(centerX, bottomY); // Fixed bottom point
+        ctxP.lineTo(topX, topY); // Moving top point
         ctxP.stroke();
 
         // Gamma - rotate top-down view
