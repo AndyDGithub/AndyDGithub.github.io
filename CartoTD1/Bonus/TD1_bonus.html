@@ -22,7 +22,7 @@
 
 <div id="map"></div>
 <canvas id="canvas" width="500" height="500"></canvas>
-<canvas id="canvasP" width="200" height="200"></canvas>
+<canvas id="canvasP" width="400" height="200"></canvas>
 
 <div class="data">
     <h2>Device Motion</h2>
@@ -85,6 +85,9 @@
         const beta = event.beta;
         const gamma = event.gamma;
 
+        // Clear previous drawings
+        ctxP.clearRect(0, 0, canvasPersonne.width, canvasPersonne.height);
+
         // Alpha - rotate circle
         // Draw the full circle
         ctxP.beginPath();
@@ -106,13 +109,13 @@
 
         // Draw the body (line)
         ctxP.beginPath();
-        ctxP.moveTo(canvasPersonne.width / 2, canvasPersonne.height / 2 - bodyHeight / 2);
-        ctxP.lineTo(canvasPersonne.width / 2 + Math.sin(tilt) * 50, canvasPersonne.height / 2 + bodyHeight / 2);
+        ctxP.moveTo(200, canvasPersonne.height / 2 - bodyHeight / 2);
+        ctxP.lineTo(canvasPersonne.height / 2 + bodyHeight / 2, canvasPersonne.width / 2 + Math.sin(tilt) * 50);
         ctxP.stroke();
 
         // Gamma - rotate top-down view
         ctxP.save();
-        ctxP.translate(canvasPersonne.width / 2, canvasPersonne.height / 2);
+        ctxP.translate(300, canvasPersonne.height / 2);
         ctxP.rotate(gamma * Math.PI / 180);
         ctxP.fillRect(-10, -10, 20, 20);  // Simulate person top-down as a square
         ctxP.restore();
