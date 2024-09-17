@@ -38,6 +38,7 @@
     const canvas = document.getElementById('canvas');
     const canvasPersonne = document.getElementById('canvasP');
     const ctx = canvas.getContext('2d');
+    const ctxP = canvasP.getContext('2d');
     let xPos = canvas.width / 2;
     let yPos = canvas.height / 2;
 
@@ -83,29 +84,30 @@
         const gamma = event.gamma;
 
         // Alpha - rotate circle
-        ctx.clearRect(0, 0, canvasPersonne.width, canvasPersonne.height);  // Clear previous drawings
-        ctx.save();
-        ctx.translate(xPos, yPos);
-        ctx.rotate(alpha * Math.PI / 180);  // Convert alpha to radians for rotation
-        ctx.beginPath();
-        ctx.arc(0, 0, 20, 0, Math.PI * 2);  // Circle
-        ctx.stroke();
-        ctx.restore();
+        ctxP.clearRect(0, 0, canvasPersonne.width, canvasPersonne.height);  // Clear previous drawings
+        ctxP.save();
+        ctxP.translate(xPos, yPos);
+        ctxP.rotate(alpha * Math.PI / 180);  // Convert alpha to radians for rotation
+        ctxP.beginPath();
+        ctxP.arc(0, 0, 20, 0, Math.PI * 2);  // Circle
+        ctxP.stroke();
+        ctxP.restore();
 
         // Beta - lean the person (simple representation)
         const bodyHeight = 100;
+        const droit = 90
         const lean = beta * Math.PI / 180;  // Convert to radians
-        ctx.beginPath();
-        ctx.moveTo(canvasPersonne.width / 2, canvasPersonne.height / 2 - bodyHeight / 2);
-        ctx.lineTo(canvasPersonne.width / 2 + Math.sin(lean) * 50, canvasPersonne.height / 2 + bodyHeight / 2);
-        ctx.stroke();
+        ctxP.beginPath();
+        ctxP.moveTo(canvasPersonne.width / 2, canvasPersonne.height / 2 - bodyHeight / 2);
+        ctxP.lineTo(canvasPersonne.width / 2 + Math.sin(droit - lean) * 50, canvasPersonne.height / 2 + bodyHeight / 2);
+        ctxP.stroke();
 
         // Gamma - rotate top-down view
-        ctx.save();
-        ctx.translate(canvasPersonne.width / 2, canvasPersonne.height / 2);
-        ctx.rotate(gamma * Math.PI / 180);
-        ctx.fillRect(-10, -10, 20, 20);  // Simulate person top-down as a square
-        ctx.restore();
+        ctxP.save();
+        ctxP.translate(canvasPersonne.width / 2, canvasPersonne.height / 2);
+        ctxP.rotate(gamma * Math.PI / 180);
+        ctxP.fillRect(-10, -10, 20, 20);  // Simulate person top-down as a square
+        ctxP.restore();
     });
 
 
