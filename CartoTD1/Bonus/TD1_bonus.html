@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<h1>Combined Geolocation, Motion, and Touch Drawing</h1>
+<h1>Bonus : Combined Geolocation, Motion, and Touch Drawing</h1>
 
 <div id="map"></div>
 <canvas id="canvas" width="500" height="500"></canvas>
@@ -29,6 +29,8 @@
     <p>Acceleration Y: <span id="y-current"></span></p>
     <p>Acceleration Z: <span id="z-current"></span></p>
 </div>
+
+<h2><a href="../Exo4/TD1_exo4.html">Lien vers l'exo precedent</a></h2>
 
 <script>
     // Setup canvas
@@ -72,6 +74,38 @@
         ctx.fillStyle = 'blue';
         ctx.fillRect(xPos, yPos, 10, 10);
     });
+
+    window.addEventListener('deviceorientation', function(event) {
+        const alpha = event.alpha;
+        const beta = event.beta;
+        const gamma = event.gamma;
+
+        // Alpha - rotate circle
+        ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear previous drawings
+        ctx.save();
+        ctx.translate(xPos, yPos);
+        ctx.rotate(alpha * Math.PI / 180);  // Convert alpha to radians for rotation
+        ctx.beginPath();
+        ctx.arc(0, 0, 20, 0, Math.PI * 2);  // Circle
+        ctx.stroke();
+        ctx.restore();
+
+        // Beta - lean the person (simple representation)
+        const bodyHeight = 100;
+        const lean = beta * Math.PI / 180;  // Convert to radians
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, canvas.height / 2 - bodyHeight / 2);
+        ctx.lineTo(canvas.width / 2 + Math.sin(lean) * 50, canvas.height / 2 + bodyHeight / 2);
+        ctx.stroke();
+
+        // Gamma - rotate top-down view
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate(gamma * Math.PI / 180);
+        ctx.fillRect(-10, -10, 20, 20);  // Simulate person top-down as a square
+        ctx.restore();
+    });
+
 
     // Touch events
     canvas.addEventListener('touchstart', function(event) {
