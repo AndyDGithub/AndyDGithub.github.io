@@ -89,15 +89,15 @@
         ctxP.clearRect(0, 0, canvasPersonne.width, canvasPersonne.height);
 
         // Alpha - rotate circle
-        // Draw the full circle
+        // Draw the full circle TODO: faire en sorte que le cercle 'commence' a 90°
         ctxP.beginPath();
-        ctxP.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, Math.PI * 2 -  - 90 * Math.PI / 180);
+        ctxP.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, Math.PI * 2);
         ctxP.stroke();
 
         // Draw the colored portion representing alpha degrees
         ctxP.beginPath();
         ctxP.moveTo(canvasPersonne.width / 2, canvasPersonne.height / 2);
-        ctxP.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, alpha * Math.PI / 180 - 90 * Math.PI / 180);
+        ctxP.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, alpha * Math.PI / 180);
         ctxP.lineTo(canvasPersonne.width / 2, canvasPersonne.height / 2);
         ctxP.fillStyle = 'blue';
         ctxP.fill();
@@ -109,7 +109,7 @@
         const bottomY = canvasPersonne.height / 2 + bodyHeight / 2;
 
         // Calculate the new top point position based on beta
-        const topX = centerX + Math.sin(beta * Math.PI / 180) * (bodyHeight / 2); // Arc movement
+        const topX = 100 + Math.sin(beta * Math.PI / 180) * (bodyHeight / 2); // Arc movement
         const topY = bottomY - Math.cos(beta * Math.PI / 180) * bodyHeight; // Vertical movement
 
         // Draw the body (line from bottom to the calculated top point)
