@@ -97,7 +97,7 @@
         // Draw the colored portion representing alpha degrees
         ctxP.beginPath();
         ctxP.moveTo(canvasPersonne.width / 2, canvasPersonne.height / 2);
-        ctxP.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, alpha * Math.PI / 180 + 90);
+        ctxP.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, alpha * Math.PI / 180 + 90 * Math.PI / 180);
         ctxP.lineTo(canvasPersonne.width / 2, canvasPersonne.height / 2);
         ctxP.fillStyle = 'blue';
         ctxP.fill();
@@ -110,7 +110,7 @@
         // Draw the body (line)
         ctxP.beginPath();
         ctxP.moveTo(100, canvasPersonne.height / 2 - bodyHeight / 2);
-        ctxP.lineTo(canvasPersonne.height / 2 + bodyHeight / 2, canvasPersonne.width / 2 + Math.sin(tilt) * 50);
+        ctxP.lineTo( canvasPersonne.width / 2 + Math.sin(tilt) * 180, canvasPersonne.height / 2 + bodyHeight / 2);
         ctxP.stroke();
 
         // Gamma - rotate top-down view
