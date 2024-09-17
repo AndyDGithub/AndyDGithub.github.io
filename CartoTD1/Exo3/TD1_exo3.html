@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TD1_Exo3</title>
+</head>
+<body>
+
+    <h1>deviceOrientation et deviceMotion</h1>
+
+    <div class="data">
+        <h2>Orientation</h2>
+        <p>absolute : <span id="absolute-current"></span></p>
+        <p>alpha : <span id="alpha-current"></span></p>
+        <p>beta : <span id="beta-current"></span></p>
+        <p>gamma : <span id="gamma-current"></span></p>
+        
+    </div>
+
+    <script>
+        window.addEventListener("deviceorientation", handleOrientation, true);
+
+        function handleOrientation(event) {
+            const absolute = event.absolute;
+            const alpha = event.alpha;
+            const beta = event.beta;
+            const gamma = event.gamma;
+
+            document.getElementById("absolute-current").textContent = absolute;
+            document.getElementById("alpha-current").textContent = alpha;
+            document.getElementById("beta-current").textContent = beta;
+            document.getElementById("gamma-current").textContent = gamma;
+        }
+
+    </script>
+    
+</body>
+</html>
