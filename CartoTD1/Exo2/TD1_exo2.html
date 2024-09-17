@@ -1,58 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TD1_Exo2</title>
-
-    <script type = "text/javascript">
-		
-        function showLocation(position) {
-           var latitude = position.coords.latitude;
-           var longitude = position.coords.longitude;
-           alert("Latitude : " + latitude + " Longitude: " + longitude);
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
         }
-
-        function errorHandler(err) {
-           if(err.code == 1) {
-              alert("Error: Access is denied!");
-           } else if( err.code == 2) {
-              alert("Error: Position is unavailable!");
-           }
+        .data {
+            margin: 20px 0;
         }
-           
-        function getLocation() {
-
-           if(navigator.geolocation) {
-              
-              // timeout at 60000 milliseconds (60 seconds)
-              var options = {timeout:60000};
-              navigator.geolocation.getCurrentPosition(showLocation, errorHandler, options);
-           } else {
-              alert("Sorry, browser does not support geolocation!");
-           }
+        h2 {
+            margin-bottom: 10px;
         }
-
-        function getLocationUpdate(){
-            
-            if(navigator.geolocation){
-               
-               // timeout at 60000 milliseconds (60 seconds)
-               var options = {timeout:60000};
-               geoLoc = navigator.geolocation;
-               watchID = geoLoc.watchPosition(showLocation, errorHandler, options);
-            } else {
-               alert("Sorry, browser does not support geolocation!");
-            }
-         }
-           
-     </script>
-
+    </style>
 </head>
-<body onload="getLocation()">
+<body>
 
+    <h1>Position et Vitesse</h1>
 
+    <div class="data">
+        <h2>getCurrentPosition()</h2>
+        <p>Latitude : <span id="lat-current"></span></p>
+        <p>Longitude : <span id="lon-current"></span></p>
+        <p>Altitude : <span id="alt-current"></span></p>
+        <p>Précision : <span id="accuracy-current"></span> mètres</p>
+        <p>Vitesse : <span id="speed-current"></span> m/s</p>
+        <p>Date : <span id="timestamp-current"></span></p>
+    </div>
 
-    
+    <div class="data">
+        <h2>watchPosition()</h2>
+        <p>Latitude : <span id="lat-watch"></span></p>
+        <p>Longitude : <span id="lon-watch"></span></p>
+        <p>Altitude : <span id="alt-watch"></span></p>
+        <p>Précision : <span id="accuracy-watch"></span> mètres</p>
+        <p>Vitesse : <span id="speed-watch"></span> m/s</p>
+        <p>Date : <span id="timestamp-watch"></span></p>
+    </div>
+
+    <script>
+        // Vérification si le navigateur supporte la géolocalisation
+        if ("geolocation" in navigator) {
+
+            // getCurrentPosition
+            navigator.geolocation.getCurrentPosition(function(position) {
+                document.getElementById("lat-current").textContent = position.coords.latitude;
+                document.getElementById("lon-current").textContent = position.coords.longitude;
+                document.getElementById("alt-current").textContent = position.coords.altitude ? position.coords.altitude : "Non disponible";
+                document.getElementById("accuracy-current").textContent = position.coords.accuracy;
+                document.getElementById("speed-current").textContent = position.coords.speed ? position.coords.speed : "Non disponible";
+                document.getElementById("timestamp-current").textContent = new Date(position.timestamp).toLocaleString();
+            }, function(error) {
+                alert("Erreur lors de la récupération de la position : " + error.message);
+            });
+
+            // watchPosition
+            navigator.geolocation.watchPosition(function(position) {
+                document.getElementById("lat-watch").textContent = position.coords.latitude;
+                document.getElementById("lon-watch").textContent = position.coords.longitude;
+                document.getElementById("alt-watch").textContent = position.coords.altitude ? position.coords.altitude : "Non disponible";
+                document.getElementById("accuracy-watch").textContent = position.coords.accuracy;
+                document.getElementById("speed-watch").textContent = position.coords.speed ? position.coords.speed : "Non disponible";
+                document.getElementById("timestamp-watch").textContent = new Date(position.timestamp).toLocaleString();
+            }, function(error) {
+                alert("Erreur lors de la récupération de la position : " + error.message);
+            });
+
+        } else {
+            alert("La géolocalisation n'est pas supportée par ce navigateur.");
+        }
+    </script>
+
 </body>
 </html>
