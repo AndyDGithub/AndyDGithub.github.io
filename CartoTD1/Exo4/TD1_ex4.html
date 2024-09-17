@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TD1_Exo4</title>
+</head>
+<body>
+
+    <h1>Touchg event</h1>
+
+    <div class="data">
+        <h2>Orientation</h2>
+        <p>start touch : <span id="start-current"></span></p>
+        <p>move : <span id="move-current"></span></p>
+        <p>start end : <span id="end-current"></span></p>
+        
+    </div>
+
+    <h1><a href="../Exo3/TD1_exo3.html">Lien vers l'exo precedent</a></h1>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", startup);
+
+        function startup() {
+            const el = document.getElementById("canvas");
+            el.addEventListener("touchstart", handleStart);
+            el.addEventListener("touchend", handleEnd);
+            el.addEventListener("touchmove", handleMove);
+        }
+
+        function handleStart(event){
+            document.getElementById("start-current").textContent = "x : " + event.x + "; y : " + event.y
+        }
+        function handleMove(event){
+            document.getElementById("move-current").textContent = "x : " + event.x + "; y : " + event.y
+        }
+        function handleEnd(event){
+            document.getElementById("end-current").textContent = "x : " + event.x + "; y : " + event.y
+        }
+
+
+
+
+    </script>
+    
+</body>
+</html>
