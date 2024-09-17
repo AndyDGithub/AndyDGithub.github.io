@@ -22,6 +22,7 @@
 
 <div id="map"></div>
 <canvas id="canvas" width="500" height="500"></canvas>
+<canvas id="canvasP" width="200" height="200"></canvas>
 
 <div class="data">
     <h2>Device Motion</h2>
@@ -35,6 +36,7 @@
 <script>
     // Setup canvas
     const canvas = document.getElementById('canvas');
+    const canvasPersonne = document.getElementById('canvasP');
     const ctx = canvas.getContext('2d');
     let xPos = canvas.width / 2;
     let yPos = canvas.height / 2;
@@ -81,7 +83,7 @@
         const gamma = event.gamma;
 
         // Alpha - rotate circle
-        ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear previous drawings
+        ctx.clearRect(0, 0, canvasPersonne.width, canvasPersonne.height);  // Clear previous drawings
         ctx.save();
         ctx.translate(xPos, yPos);
         ctx.rotate(alpha * Math.PI / 180);  // Convert alpha to radians for rotation
@@ -94,13 +96,13 @@
         const bodyHeight = 100;
         const lean = beta * Math.PI / 180;  // Convert to radians
         ctx.beginPath();
-        ctx.moveTo(canvas.width / 2, canvas.height / 2 - bodyHeight / 2);
-        ctx.lineTo(canvas.width / 2 + Math.sin(lean) * 50, canvas.height / 2 + bodyHeight / 2);
+        ctx.moveTo(canvasPersonne.width / 2, canvasPersonne.height / 2 - bodyHeight / 2);
+        ctx.lineTo(canvasPersonne.width / 2 + Math.sin(lean) * 50, canvasPersonne.height / 2 + bodyHeight / 2);
         ctx.stroke();
 
         // Gamma - rotate top-down view
         ctx.save();
-        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.translate(canvasPersonne.width / 2, canvasPersonne.height / 2);
         ctx.rotate(gamma * Math.PI / 180);
         ctx.fillRect(-10, -10, 20, 20);  // Simulate person top-down as a square
         ctx.restore();
