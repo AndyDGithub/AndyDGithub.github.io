@@ -87,17 +87,17 @@
 
         // Alpha - rotate circle
         // Draw the full circle
-        ctxPersonne.beginPath();
-        ctxPersonne.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, Math.PI * 2);
-        ctxPersonne.stroke();
+        ctxP.beginPath();
+        ctxP.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, Math.PI * 2);
+        ctxP.stroke();
 
         // Draw the colored portion representing alpha degrees
-        ctxPersonne.beginPath();
-        ctxPersonne.moveTo(canvasPersonne.width / 2, canvasPersonne.height / 2);
-        ctxPersonne.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, alpha * Math.PI / 180);
-        ctxPersonne.lineTo(canvasPersonne.width / 2, canvasPersonne.height / 2);
-        ctxPersonne.fillStyle = 'blue';
-        ctxPersonne.fill();
+        ctxP.beginPath();
+        ctxP.moveTo(canvasPersonne.width / 2, canvasPersonne.height / 2);
+        ctxP.arc(canvasPersonne.width / 2, canvasPersonne.height / 2, 50, 0, alpha * Math.PI / 180);
+        ctxP.lineTo(canvasPersonne.width / 2, canvasPersonne.height / 2);
+        ctxP.fillStyle = 'blue';
+        ctxP.fill();
 
         // Beta - lean the person (simple representation)
         // Draw a person standing or tilted based on beta
@@ -105,10 +105,10 @@
         const tilt = (beta - 90) * Math.PI / 180;  // Adjust tilt; 90° = upright
 
         // Draw the body (line)
-        ctxPersonne.beginPath();
-        ctxPersonne.moveTo(canvasPersonne.width / 2, canvasPersonne.height / 2 - bodyHeight / 2);
-        ctxPersonne.lineTo(canvasPersonne.width / 2 + Math.sin(tilt) * 50, canvasPersonne.height / 2 + bodyHeight / 2);
-        ctxPersonne.stroke();
+        ctxP.beginPath();
+        ctxP.moveTo(canvasPersonne.width / 2, canvasPersonne.height / 2 - bodyHeight / 2);
+        ctxP.lineTo(canvasPersonne.width / 2 + Math.sin(tilt) * 50, canvasPersonne.height / 2 + bodyHeight / 2);
+        ctxP.stroke();
 
         // Gamma - rotate top-down view
         ctxP.save();
