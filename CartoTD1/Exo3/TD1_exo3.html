@@ -22,7 +22,9 @@
         <p>acceleration x : <span id="x-current"></span></p>
         <p>acceleration y : <span id="y-current"></span></p>
         <p>acceleration z : <span id="z-current"></span></p>
-        
+        <p>rotation alpha : <span id="rotaA-current"></span></p>
+        <p>rotation beta : <span id="rotaB-current"></span></p>
+        <p>rotation gamma : <span id="rotaG-current"></span></p>
     </div>
 
     <h1><a href="../Exo2/TD1_exo2.html">Lien vers l'exo precedent</a></h1>
@@ -47,10 +49,16 @@
             var x = event.accelerationIncludingGravity.x;
             var y = event.accelerationIncludingGravity.y;
             var z = event.accelerationIncludingGravity.z;
+            var rotaA = event.accelerationIncludingGravity.alpha
+            var rotaB = event.accelerationIncludingGravity.beta
+            var rotaG = event.accelerationIncludingGravity.gamma
 
             document.getElementById("x-current").textContent = x;
             document.getElementById("y-current").textContent = y;
             document.getElementById("z-current").textContent = z;
+            document.getElementById("rotaA-current").textContent = rotaA;
+            document.getElementById("rotaB-current").textContent = rotaB;
+            document.getElementById("rotaG-current").textContent = rotaG;
         }
 
 
