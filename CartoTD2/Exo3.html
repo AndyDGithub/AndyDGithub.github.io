@@ -28,14 +28,12 @@
             }).addTo(map);
 
             // Charger les données GeoJSON à partir d'une URL
-            const geoJsonUrl = 'https://geo.api.gouv.fr/communes?zone=metro&type=commune-actuelle&fields=departement&format=geojson&geometry=centre';
+            const geoJsonUrl = 'https://france-geojson.gregoiredavid.fr/repo/departements.geojson';
 
             fetch(geoJsonUrl)
              .then(response => response.json())
              .then(data => {
-                data.features.forEach(elem => {                    
-                    L.marker(elem.geometry.coordinates).addTo(map).bindPopup(elem.properties.departement.nom);
-                });
+                L.geoJSON(data).addTo(map);
              })
 
             
