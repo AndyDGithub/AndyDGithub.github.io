@@ -28,25 +28,12 @@
             }).addTo(map);
 
             // Charger les données GeoJSON à partir d'une URL
-            const geoJsonUrl = 'https://geo.api.gouv.fr/communes?zone=com&type=commune-actuelle&fields=departement&format=geojson&geometry=centre';
+            const geoJsonUrl = 'https://france-geojson.gregoiredavid.fr/repo/departements.geojson';
 
             fetch(geoJsonUrl)
              .then(response => response.json())
              .then(data => {
-                 // Ajouter les communes à la carte
-                 L.geoJson(data, {
-                     style: function (feature) {
-                         return {
-                             color: 'black',
-                             weight: 1,
-                             fillColor: '#f03',
-                             fillOpacity: 0.5
-                         };
-                     },
-                     onEachFeature: function (feature, layer) {
-                         layer.bindPopup(feature.properties.departement);
-                     }
-                 }).addTo(map);
+                L.geoJSON(data).addTo(map);
              })
 
             
