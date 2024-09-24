@@ -25,14 +25,14 @@
         const nice = [43.700000, 7.250000];
         const marseille = [43.2965, 5.3698];
 
+        
+
         // Fonction d'initialisation de la carte
         function initMap(userLat, userLon, precision) {
             const map = L.map('map').setView([userLat, userLon], 5);
 
-            // Ajouter une couche Stamen
-            L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="http://maps.stamen.com">Stamen Maps</a>',
-                maxZoom: 18,
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
             }).addTo(map);
 
             // Dessiner le triangle des Bermudes en rouge
@@ -46,9 +46,10 @@
                 radius: precision // Utiliser la précision pour le rayon du cercle
             }).addTo(map).bindPopup("Votre position avec une précision de " + precision + " mètres.");
 
-            // Ajouter un marqueur pour Nice et pour l'utilisateur
+            // Ajouter un marqueur pour Nice, marseille et pour l'utilisateur
             L.marker([userLat, userLon]).addTo(map).bindPopup('Vous êtes ici !').openPopup();
             L.marker(nice).addTo(map).bindPopup('Nice centre ville');
+            L.marker(marseille).addTo(map).bindPopup('Marseille');
 
             // Ajouter une ligne entre Marseille et Nice
             const marseilleToNice = L.polyline([marseille, nice], {color: 'green'}).addTo(map);
@@ -60,6 +61,32 @@
             // Ajouter un segment entre Marseille et la position actuelle
             L.polyline([marseille, [userLat, userLon]], {color: 'blue'}).addTo(map).bindPopup("Distance à Marseille: " + (distanceToMarseille / 1000).toFixed(2) + " km").openPopup();
         }
+
+        // Récupérer les coordonnées de Nice via l'API Nominatim
+        fetch('https://nominatim.openstreetmap.org/search?q=Nice&format=json&limit=1')
+                .then(response => response.json())
+                .then(data => {
+                    const niceLat = data[0].lat;
+                    const niceLon = data[0].lon;
+
+                    nice = [niceLat, niceLon]
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des coordonnées de Nice:', error);
+                });
+        
+        // Récupérer les coordonnées de Nice via l'API Nominatim
+        fetch('https://nominatim.openstreetmap.org/search?q=Marseille&format=json&limit=1')
+                .then(response => response.json())
+                .then(data => {
+                    const MarseilleLat = data[0].lat;
+                    const MarseilleLon = data[0].lon;
+
+                    marseille = [MarseilleLat, MarseilleLon]
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des coordonnées de Marseille:', error);
+                });
 
         // Récupérer la position actuelle de l'utilisateur
         navigator.geolocation.getCurrentPosition(
