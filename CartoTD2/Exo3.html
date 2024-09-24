@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TD2 Exercice 3</title>
+    <style>
+        #map {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>TD2 Exercice 3</h1>
+    <div id="map"></div>
+
+    <script>
+        // Fonction d'initialisation de la carte
+        function initMap() {
+            const map = L.map('map').setView([43.700000, 7.250000], 12);
+
+            // Ajouter la couche Stamen
+            L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="http://maps.stamen.com">Stamen Maps</a>',
+                maxZoom: 18,
+            }).addTo(map);
+
+            // Charger les données GeoJSON à partir d'une URL
+            const geoJsonUrl = 'https://opendata.nicecotedazur.org/dataset/xyz/geojson-url'; // Remplacer par le vrai lien GeoJSON
+
+            // Charger et afficher les données GeoJSON sur la carte
+            fetch(geoJsonUrl)
+                .then(response => response.json())
+                .then(data => {
+                    L.geoJSON(data, {
+                        style: function (feature) {
+                            return {color: 'green'}; // Style personnalisé
+                        },
+                        onEachFeature: function (feature, layer) {
+                            // Ajouter un popup avec des informations à partir des propriétés GeoJSON
+                            if (feature.properties && feature.properties.name) {
+                                layer.bindPopup(feature.properties.name);
+                            }
+                        }
+                    }).addTo(map);
+                })
+                .catch(error => {
+                    console.error("Erreur lors du chargement des données GeoJSON:", error);
+                });
+        }
+
+        // Initialiser la carte
+        initMap();
+    </script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</body>
+</html>
