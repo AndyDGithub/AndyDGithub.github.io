@@ -13,46 +13,64 @@
 </head>
 <body>
 
-    <h1>TD2 Exercice 3</h1>
+    <h1>TD2 Exercice 3: GeoJSON</h1>
     <div id="map"></div>
+
+    <h2><a href="../CartoTD2/Exo2.html">Lien vers l'exercice 2</a></h2>
 
     <script>
         // Fonction d'initialisation de la carte
-        function initMap() {
-            const map = L.map('map').setView([43.700000, 7.250000], 12);
+        function initMap(userLat, userLon) {
+            const map = L.map('map').setView([userLat, userLon], 5);
 
-            // Ajouter la couche Stamen
-            L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="http://maps.stamen.com">Stamen Maps</a>',
-                maxZoom: 18,
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
             }).addTo(map);
 
             // Charger les données GeoJSON à partir d'une URL
-            const geoJsonUrl = 'https://opendata.nicecotedazur.org/dataset/xyz/geojson-url'; // Remplacer par le vrai lien GeoJSON
+            const geoJsonUrl = 'https://geo.api.gouv.fr/communes?zone=com&type=commune-actuelle&fields=departement&format=geojson&geometry=centre';
 
-            // Charger et afficher les données GeoJSON sur la carte
             fetch(geoJsonUrl)
-                .then(response => response.json())
-                .then(data => {
-                    L.geoJSON(data, {
-                        style: function (feature) {
-                            return {color: 'green'}; // Style personnalisé
-                        },
-                        onEachFeature: function (feature, layer) {
-                            // Ajouter un popup avec des informations à partir des propriétés GeoJSON
-                            if (feature.properties && feature.properties.name) {
-                                layer.bindPopup(feature.properties.name);
-                            }
-                        }
-                    }).addTo(map);
-                })
-                .catch(error => {
-                    console.error("Erreur lors du chargement des données GeoJSON:", error);
-                });
+             .then(response => response.json())
+             .then(data => {
+                 // Ajouter les communes à la carte
+                 L.geoJson(data, {
+                     style: function (feature) {
+                         return {
+                             color: 'black',
+                             weight: 1,
+                             fillColor: '#f03',
+                             fillOpacity: 0.5
+                         };
+                     },
+                     onEachFeature: function (feature, layer) {
+                         layer.bindPopup(feature.properties.departement);
+                     }
+                 }).addTo(map);
+             })
+
+            
         }
 
-        // Initialiser la carte
-        initMap();
+        // Récupérer la position actuelle de l'utilisateur
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const userLat = position.coords.latitude;
+                const userLon = position.coords.longitude;
+                const precision = position.coords.accuracy; // Précision estimée en mètres
+
+                // Initialiser la carte avec les coordonnées de l'utilisateur
+                initMap(userLat, userLon, precision);
+            },
+            () => {
+                // Si la géolocalisation échoue, utiliser une position par défaut (Paris)
+                const userLat = 48.8566;
+                const userLon = 2.3522;
+
+                // Initialiser la carte avec la position par défaut
+                initMap(userLat, userLon);
+            }
+        );
     </script>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
