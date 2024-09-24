@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TD2 Exercice 2</title>
+    <style>
+        #map {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>TD2 Exercice 2</h1>
+    <div id="map"></div>
+    <p id="distance"></p> <!-- L'endroit où la distance sera affichée -->
+
+    <script>
+        // Coordonées des points d'intérêt
+        const miami = [25.7743, -80.1937];
+        const sanJuan = [18.4663, -66.1057];
+        const bermuda = [32.3214, -64.7574];
+        const nice = [43.700000, 7.250000];
+        const marseille = [43.2965, 5.3698];
+
+        // Fonction d'initialisation de la carte
+        function initMap(userLat, userLon, precision) {
+            const map = L.map('map').setView([userLat, userLon], 5);
+
+            // Ajouter une couche Stamen
+            L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="http://maps.stamen.com">Stamen Maps</a>',
+                maxZoom: 18,
+            }).addTo(map);
+
+            // Dessiner le triangle des Bermudes en rouge
+            const bermudaTriangle = L.polygon([miami, sanJuan, bermuda], {color: 'red'}).addTo(map);
+
+            // Ajouter un cercle autour de la position actuelle avec la précision
+            L.circle([userLat, userLon], {
+                color: 'blue',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: precision // Utiliser la précision pour le rayon du cercle
+            }).addTo(map).bindPopup("Votre position avec une précision de " + precision + " mètres.");
+
+            // Ajouter un marqueur pour Nice et pour l'utilisateur
+            L.marker([userLat, userLon]).addTo(map).bindPopup('Vous êtes ici !').openPopup();
+            L.marker(nice).addTo(map).bindPopup('Nice centre ville');
+
+            // Ajouter une ligne entre Marseille et Nice
+            const marseilleToNice = L.polyline([marseille, nice], {color: 'green'}).addTo(map);
+
+            // Calculer la distance entre Marseille et la position actuelle
+            const distanceToMarseille = map.distance(marseille, [userLat, userLon]);
+            document.getElementById("distance").innerText = "Distance entre Marseille et votre position : " + (distanceToMarseille / 1000).toFixed(2) + " km";
+
+            // Ajouter un segment entre Marseille et la position actuelle
+            L.polyline([marseille, [userLat, userLon]], {color: 'blue'}).addTo(map).bindPopup("Distance à Marseille: " + (distanceToMarseille / 1000).toFixed(2) + " km").openPopup();
+        }
+
+        // Récupérer la position actuelle de l'utilisateur
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const userLat = position.coords.latitude;
+                const userLon = position.coords.longitude;
+                const precision = position.coords.accuracy; // Précision estimée en mètres
+
+                // Initialiser la carte avec les coordonnées de l'utilisateur
+                initMap(userLat, userLon, precision);
+            },
+            () => {
+                // Si la géolocalisation échoue, utiliser une position par défaut (Paris)
+                const userLat = 48.8566;
+                const userLon = 2.3522;
+                const precision = 1000; // Précision par défaut
+
+                // Initialiser la carte avec la position par défaut
+                initMap(userLat, userLon, precision);
+            }
+        );
+    </script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</body>
+</html>
