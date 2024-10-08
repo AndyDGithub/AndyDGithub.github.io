@@ -32,10 +32,25 @@
             material.diffuseTexture = new BABYLON.Texture("https://www.babylonjs.com/assets/wood.jpg", scene);
             sphere.material = material;
 
-            // Charger un modèle 3D
+            // Charger un modèle 3D UFO
             BABYLON.SceneLoader.ImportMesh("", "https://models.babylonjs.com/", "ufo.glb", scene, function(meshes) {
-                const pineCone = meshes[0];
-                pineCone.position.y = 1; // Positionner le modèle
+                const ufo = meshes[0];
+                ufo.position.y = 1; // Positionner le modèle UFO
+            });
+
+            // Charger un modèle 3D Seagull
+            BABYLON.SceneLoader.ImportMesh("", "https://models.babylonjs.com/", "seagulf.glb", scene, function(meshes) {
+                const seagull = meshes[0];
+                seagull.position.z = -1300; // Positionner le modèle Seagull
+                // Agrandir le modèle
+                seagull.scaling.x = 0.5;
+                seagull.scaling.y = 0.5;
+                seagull.scaling.z = 1;
+
+                // Faire face à la caméra
+                seagull.lookAt(camera.position); // Faire regarder le modèle vers la caméra
+            }, null, function(scene, message) {
+                console.error(message); // Afficher une erreur si le modèle ne peut pas être chargé
             });
 
             return scene;
