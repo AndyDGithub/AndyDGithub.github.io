@@ -14,7 +14,7 @@ let pinecone;
 
 // Télécharger un objet 3D
 const loader = new GLTFLoader();
-loader.load('../pine-cone-2-3d-model/scene.gltf', function (gltf) {
+loader.load('/CartoTD3/pine-cone-2-3d-model/scene.gltf', function (gltf) {
     pinecone = gltf.scene; 
     scene.add(pinecone);
     camera.position.set(0, 0, 25); // Positionner la caméra
