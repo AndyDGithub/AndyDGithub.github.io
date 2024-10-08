@@ -43,6 +43,10 @@ function handleOrientation(event) {
   }
 }
 
+// Ajouter du brouillard
+scene.fog = new THREE.FogExp2(0xcccccc, 0.02); // Couleur du brouillard et densité
+
+
 // Ajouter l'événement listener pour l'orientation du téléphone
 if (window.DeviceOrientationEvent) {
   window.addEventListener('deviceorientation', handleOrientation, true);

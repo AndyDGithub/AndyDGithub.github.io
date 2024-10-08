@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Babylon.js Scene</title>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <style>
+        canvas { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById("renderCanvas");
+        const engine = new BABYLON.Engine(canvas, true);
+
+        // Créez la scène
+        const createScene = function() {
+            const scene = new BABYLON.Scene(engine);
+            const camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 5, BABYLON.Vector3.Zero(), scene);
+            camera.attachControl(canvas, true);
+
+            // Lumière
+            const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), scene);
+            light.intensity = 0.7;
+
+            // Créez un objet générique (sphère)
+            const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2}, scene);
+            const material = new BABYLON.StandardMaterial("mat", scene);
+            material.diffuseTexture = new BABYLON.Texture("https://www.babylonjs.com/assets/wood.jpg", scene);
+            sphere.material = material;
+
+            // Charger un modèle 3D
+            BABYLON.SceneLoader.ImportMesh("", "https://models.babylonjs.com/", "ufo.glb", scene, function(meshes) {
+                const pineCone = meshes[0];
+                pineCone.position.y = 1; // Positionner le modèle
+            });
+
+            return scene;
+        };
+
+        const scene = createScene();
+
+        // Fonction pour gérer l'orientation du téléphone
+        function handleOrientation(event) {
+            const alpha = event.alpha; // Rotation autour de l'axe Z
+            const beta = event.beta;   // Rotation autour de l'axe X
+            const gamma = event.gamma; // Rotation autour de l'axe Y
+
+            // Ajuster la rotation de la caméra ou de l'objet en fonction des valeurs de beta et gamma
+            camera.beta = BABYLON.Tools.ToRadians(beta);
+            camera.alpha = BABYLON.Tools.ToRadians(gamma);
+        }
+
+        // Écoutez l'événement de l'orientation du téléphone
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', handleOrientation, true);
+        }
+
+        engine.runRenderLoop(function() {
+            scene.render();
+        });
+
+        window.addEventListener("resize", function() {
+            engine.resize();
+        });
+    </script>
+</body>
+</html>
