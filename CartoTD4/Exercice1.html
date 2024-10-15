@@ -88,7 +88,7 @@
                         const lon = country.latlng[1];
 
                         // Créez un marqueur pour chaque pays
-                        const marker = BABYLON.Mesh.CreateSphere("marker", 0.05, 0.05, scene); // Résolution 32 segments pour plus de détails
+                        const marker = BABYLON.Mesh.CreateSphere("marker", 10, 0.05, scene);
                         
                         // Convertir les coordonnées géodésiques en coordonnées ECEF et placer le marqueur
                         marker.position = FromGeodeticToECEFCoordinates(lat, lon, 1);
