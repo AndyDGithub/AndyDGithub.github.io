@@ -4,24 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geolocalisation Babylon</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://assets.babylonjs.com/generated/Assets.js"></script>
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.js"></script>
     <style>
-        canvas { width: 100%; height: 100%; }
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #map {
+            width: 250px;
+            height: 250px;
+            position: absolute;
+            bottom: 20px; /* Ajuste la position verticale */
+            right: 20px; /* Ajuste la position horizontale */
+            z-index: 10; /* Assurez-vous que la carte soit au-dessus du canvas */
+        }
     </style>
 </head>
 <body>
+    <div id="map"></div>
     <canvas id="renderCanvas"></canvas>
     <script>
         const canvas = document.getElementById("renderCanvas");
         const engine = new BABYLON.Engine(canvas, true);
+        let camera;
+        let map;
 
         // Créez la scène
         const createScene = function() {
             const scene = new BABYLON.Scene(engine);
-            const camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 5, BABYLON.Vector3.Zero(), scene);
+            camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 5, BABYLON.Vector3.Zero(), scene);
             camera.attachControl(canvas, true);
 
             // Lumière
@@ -81,6 +105,12 @@
 
                         // Appliquez le matériau au marqueur
                         marker.material = flagMaterial;
+
+                        // Ajoutez un événement de clic pour repositionner la carte et la globe
+                        marker.actionManager = new BABYLON.ActionManager(scene);
+                        marker.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function() {
+                            repositionMap(lat, lon); // Centrer la carte sur le marqueur cliqué
+                        }));
                     });
                 });
 
@@ -101,6 +131,90 @@
 
             return new BABYLON.Vector3(x, y, z);
         }
+
+        // Fonction d'initialisation de la carte
+        function initMap(userLat, userLon, precision) {
+            map = L.map('map').setView([userLat, userLon], 5);
+
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+            }).addTo(map);
+
+            // Ajouter un cercle autour de la position actuelle avec la précision
+            L.circle([userLat, userLon], {
+                color: 'blue',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: precision // Utiliser la précision pour le rayon du cercle
+            }).addTo(map).bindPopup("Votre position avec une précision de " + precision + " mètres.");
+
+            // Ajouter un marqueur pour l'utilisateur
+            L.marker([userLat, userLon]).addTo(map).bindPopup('Vous êtes ici !').openPopup();
+
+            // ajouter un marqueur pour chaque pays
+            fetch('https://restcountries.com/v3.1/all')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(country => {
+                        const lat = country.latlng[0];
+                        const lon = country.latlng[1];
+
+                        // Créez un marqueur pour chaque pays
+                        const marker = L.marker([lat, lon]).addTo(map);
+
+                        // Créez un popup pour chaque marqueur avec le nom du pays et le drapeau
+                        marker.bindPopup(country.name.common + "<br>" + "<img src='" + country.flags.png + "' width='50'>").openPopup();
+
+                        // si on clique sur un marqueur, on va a sa position sur le globe
+                        marker.on('click', function(e) {
+                            repositionGlobe(lat, lon);
+                        });
+                    });
+                });
+        }
+
+        // Fonction pour repositionner le globe
+        function repositionGlobe(lat, lon) {
+            const targetPosition = FromGeodeticToECEFCoordinates(lat, lon, 2.1);
+            const distance = camera.radius; // Distance actuelle de la caméra
+            const animationDuration = 1000; // Durée de l'animation en ms
+            const frames = 60; // Nombre de frames pour l'animation
+
+            // Animation de la caméra vers la nouvelle position
+            for (let i = 0; i <= frames; i++) {
+                const t = i / frames;
+                const interpolatedPosition = BABYLON.Vector3.Lerp(camera.position, targetPosition, t);
+                setTimeout(() => {
+                    camera.setPosition(interpolatedPosition);
+                }, (animationDuration / frames) * i);
+            }
+        }
+
+        // Fonction pour repositionner le globe
+        function repositionMap(lat, lon) {
+            map.setView([lat, lon], 5);        
+        }
+
+        // Récupérer la position actuelle de l'utilisateur
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const userLat = position.coords.latitude;
+                const userLon = position.coords.longitude;
+                const precision = position.coords.accuracy; // Précision estimée en mètres
+
+                // Initialiser la carte avec les coordonnées de l'utilisateur
+                initMap(userLat, userLon, precision);
+            },
+            () => {
+                // Si la géolocalisation échoue, utiliser une position par défaut (Paris)
+                const userLat = 48.8566;
+                const userLon = 2.3522;
+                const precision = 1000; // Précision par défaut
+
+                // Initialiser la carte avec la position par défaut
+                initMap(userLat, userLon, precision);
+            }
+        );
 
 
         // Fonction pour gérer l'orientation du téléphone
