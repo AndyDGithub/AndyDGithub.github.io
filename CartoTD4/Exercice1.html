@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocalisation Babylon</title>
+    <script src="https://assets.babylonjs.com/generated/Assets.js"></script>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <style>
+        canvas { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById("renderCanvas");
+        const engine = new BABYLON.Engine(canvas, true);
+
+        // Créez la scène
+        const createScene = function() {
+            const scene = new BABYLON.Scene(engine);
+            const camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 5, BABYLON.Vector3.Zero(), scene);
+            camera.attachControl(canvas, true);
+
+            // Lumière
+            const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), scene);
+            light.intensity = 0.7;
+
+            // Créez un objet générique (sphère)
+            const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2}, scene);
+
+            // Texturer cet objet avec une image de la terre :
+            // Créez un matériau pour la sphère (Terre)
+            const earthMaterial = new BABYLON.StandardMaterial("earthMaterial", scene);
+            
+            // Appliquez la texture de la Terre au matériau
+            earthMaterial.diffuseTexture = new BABYLON.Texture("./2k_earth_daymap.jpg", scene);
+
+            // Appliquez le matériau à la sphère
+            sphere.material = earthMaterial;
+            sphere.scaling.x = -1;
+            sphere.scaling.y = -1;
+            sphere.scaling.z = 1;
+
+            // Recuperer la position actuelle et placer un marqueur
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const userLat = position.coords.latitude;
+                const userLon = position.coords.longitude;
+
+                const marker = BABYLON.Mesh.CreateSphere("marker", 0.05, 0.05, scene);
+                marker.position = FromGeodeticToECEFCoordinates(userLat, userLon,1);
+                marker.material = new BABYLON.StandardMaterial("markerMaterial", scene);
+                marker.material.diffuseColor = new BABYLON.Color3(1, 0, 0);
+            });
+
+            // recuperer la position de plusieurs pays et placer des marqueurs avec leurs drapeaux
+            fetch('https://restcountries.com/v3.1/all')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(country => {
+                        const lat = country.latlng[0];
+                        const lon = country.latlng[1];
+
+                        // Créez un marqueur pour chaque pays
+                        const marker = BABYLON.Mesh.CreateSphere("marker", 0.05, 0.05, scene); // Résolution 32 segments pour plus de détails
+                        
+                        // Convertir les coordonnées géodésiques en coordonnées ECEF et placer le marqueur
+                        marker.position = FromGeodeticToECEFCoordinates(lat, lon, 1);
+                        
+                        // Créez un matériau pour le marqueur
+                        const flagMaterial = new BABYLON.StandardMaterial("flagMaterial", scene);
+
+                        // Vérifiez si le pays a un drapeau et appliquez-le
+                        if (country.flags.png) {
+                            flagMaterial.diffuseTexture = new BABYLON.Texture(country.flags.png, scene);
+                        } else {
+                            flagMaterial.diffuseColor = new BABYLON.Color3(0, 0, 1); // Couleur par défaut si pas de drapeau
+                        }
+
+                        // Appliquez le matériau au marqueur
+                        marker.material = flagMaterial;
+                    });
+                });
+
+            return scene;
+        };
+
+        const scene = createScene();
+
+        function FromGeodeticToECEFCoordinates(lat, lon, height) {
+            const radius = height; 
+            const latRad = BABYLON.Tools.ToRadians(lat); 
+            const lonRad = BABYLON.Tools.ToRadians(lon);
+
+            // Formules de conversion ECEF
+            const x = radius * Math.cos(latRad) * Math.cos(lonRad);
+            const y = radius * Math.sin(latRad);
+            const z = radius * Math.cos(latRad) * Math.sin(lonRad);
+
+            return new BABYLON.Vector3(x, y, z);
+        }
+
+
+        // Fonction pour gérer l'orientation du téléphone
+        function handleOrientation(event) {
+            const alpha = event.alpha; // Rotation autour de l'axe Z
+            const beta = event.beta;   // Rotation autour de l'axe X
+            const gamma = event.gamma; // Rotation autour de l'axe Y
+
+            // Ajuster la rotation de la caméra ou de l'objet en fonction des valeurs de beta et gamma
+            camera.beta = BABYLON.Tools.ToRadians(beta);
+            camera.alpha = BABYLON.Tools.ToRadians(gamma);
+        }
+
+        // Écoutez l'événement de l'orientation du téléphone
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', handleOrientation, true);
+        }
+
+        engine.runRenderLoop(function() {
+            scene.render();
+        });
+
+        window.addEventListener("resize", function() {
+            engine.resize();
+        });
+    </script>
+</body>
+</html>
